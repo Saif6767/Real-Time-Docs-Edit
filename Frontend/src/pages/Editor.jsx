@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 import API from "../api/axios";
 
-const socket = io("http://localhost:5000"); 
+const socket = io("https://real-time-docs-edit.onrender.com"); 
 
 const Editor = () => {
   const { id } = useParams();
