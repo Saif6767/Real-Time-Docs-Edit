@@ -11,7 +11,7 @@ function App() {
     <div className="min-h-screen bg-gray-100">
       <Navbar />
       <Routes>
-        {/* Protected Routes */}
+        
         <Route
           path="/"
           element={
@@ -29,7 +29,7 @@ function App() {
           }
         />
 
-        {/* Public Routes */}
+        
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>
