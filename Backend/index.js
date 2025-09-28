@@ -19,33 +19,33 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/docs", docsRoutes);
 
-// Socket.IO setup
+// Socket.IO 
 const server = createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 
-// Track users per document
-const documentsUsers = {}; // { docId: [{ socketId, userId, username }] }
+
+const documentsUsers = {}; 
 
 io.on("connection", (socket) => {
   console.log("New client connected:", socket.id);
 
-  // Join document
+  
   socket.on("join-document", async ({ docId, userId, username }) => {
     socket.join(docId);
     console.log(`User ${username} joined document ${docId}`);
 
     if (!documentsUsers[docId]) documentsUsers[docId] = [];
 
-    // Avoid duplicates
+    
     if (!documentsUsers[docId].some(u => u.userId === userId)) {
       documentsUsers[docId].push({ socketId: socket.id, userId, username });
     }
 
-    // Emit active collaborators to all clients in the room
+    
     const activeUsers = documentsUsers[docId].map(u => u.username);
     io.to(docId).emit("active-collaborators", activeUsers);
 
-    // Merge with existing collaborators in MongoDB
+    
     try {
       const doc = await Document.findById(docId);
       if (doc) {
@@ -57,12 +57,12 @@ io.on("connection", (socket) => {
     }
   });
 
-  // Broadcast text changes
+  
   socket.on("send-changes", ({ docId, content }) => {
     socket.to(docId).emit("receive-changes", content);
   });
 
-  // Handle disconnect
+  
   socket.on("disconnect", async () => {
     console.log("Client disconnected:", socket.id);
 
@@ -74,7 +74,7 @@ io.on("connection", (socket) => {
         const activeUsers = documentsUsers[docId].map(u => u.username);
         io.to(docId).emit("active-collaborators", activeUsers);
 
-        // Update MongoDB collaborators (remove disconnected user)
+        
         try {
           const doc = await Document.findById(docId);
           if (doc) {
