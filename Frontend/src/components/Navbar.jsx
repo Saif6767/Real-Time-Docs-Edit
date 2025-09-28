@@ -9,7 +9,7 @@ const Navbar = () => {
     navigate("/login");
   };
 
-  // Tailwind active style function
+  
   const activeClass = ({ isActive }) =>
     isActive
       ? "bg-white text-blue-600 px-4 py-2 rounded-md font-semibold transition"
