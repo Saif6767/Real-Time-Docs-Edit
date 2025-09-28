@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 import API from "../api/axios";
 
-const socket = io("http://localhost:5000"); // backend Socket.IO URL
+const socket = io("http://localhost:5000"); 
 
 const Editor = () => {
   const { id } = useParams();
@@ -16,7 +16,7 @@ const Editor = () => {
     username: localStorage.getItem("username") || "Guest",
   };
 
-  // Fetch document
+
   const fetchDoc = async () => {
     try {
       const res = await API.get(`/docs/${id}`);
@@ -28,15 +28,15 @@ const Editor = () => {
 
   useEffect(() => {
     fetchDoc();
-    // Join document with user info
+    
     socket.emit("join-document", { docId: id, userId: user.userId, username: user.username });
 
-    // Listen for live changes
+    
     socket.on("receive-changes", (newContent) => {
       setContent(newContent);
     });
 
-    // Listen for active collaborators
+    
     socket.on("active-collaborators", (list) => {
       setCollaborators(list);
     });
@@ -47,13 +47,13 @@ const Editor = () => {
     };
   }, [id]);
 
-  // Handle typing
+  
   const handleChange = (e) => {
     setContent(e.target.value);
     socket.emit("send-changes", { docId: id, content: e.target.value });
   };
 
-  // Auto-save every 10 seconds
+  
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
@@ -71,7 +71,6 @@ const Editor = () => {
     <div className="p-6 max-w-5xl mx-auto">
       <h2 className="text-2xl font-bold mb-4 text-gray-700">Editing Document {id}</h2>
 
-      {/* Collaborators */}
       <div className="mb-4">
         <p className="text-gray-500 text-sm">
           Active collaborators: {collaborators.join(", ") || "No one else"}
